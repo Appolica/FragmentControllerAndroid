@@ -11,6 +11,7 @@ public class FragmentController extends Fragment {
     public static final String FRAGMENT_TYPE_ARGUMENT = "fragmentTypeArgument";
     private static final String ROOT_FRAGMENT_TAG = "root";
 
+    //// TODO: 28.01.17 should root fragment tag be exceptional and private in the controller
     public FragmentController() {
     }
 
@@ -30,20 +31,21 @@ public class FragmentController extends Fragment {
             push(new FragmentController.PushBuilder()
                     .addToBackStack(true)
                     .fragment(fragmentType, ROOT_FRAGMENT_TAG)
+                    .build()
             );
         }
         return inflater.inflate(R.layout.fragment_container, container, false);
     }
 
-    public void push(PushBuilder builder) {
+    public void push(PushBody body) {
         FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
 
-        if (builder.isToBackStack()) {
-            fragmentTransaction.addToBackStack(builder.getTag());
+        if (body.isToBackStack()) {
+            fragmentTransaction.addToBackStack(body.getTag());
         }
 
         fragmentTransaction
-                .replace(R.id.fragmentPlace, builder.getFragment(), builder.getTag())
+                .replace(R.id.fragmentPlace, body.getFragment(), body.getTag())
                 .commit();
     }
 
@@ -72,15 +74,37 @@ public class FragmentController extends Fragment {
             return this;
         }
 
-        Fragment getFragment() {
+        public PushBody build() {
+            if (fragmentType == null) {
+                throw new IllegalStateException("FragmentType must not be null");
+            } else if (tag == null) {
+                throw new IllegalStateException("Tag must not be null");
+            }
+
+            return new PushBody(fragmentType, tag, toBackStack);
+        }
+    }
+
+    private static class PushBody {
+        private ControllerFragmentType fragmentType;
+        private String tag;
+        private boolean toBackStack;
+
+        public PushBody(ControllerFragmentType fragmentType, String tag, boolean toBackStack) {
+            this.fragmentType = fragmentType;
+            this.tag = tag;
+            this.toBackStack = toBackStack;
+        }
+
+        public Fragment getFragment() {
             return fragmentType.getInstance();
         }
 
-        String getTag() {
+        public String getTag() {
             return tag;
         }
 
-        boolean isToBackStack() {
+        public boolean isToBackStack() {
             return toBackStack;
         }
     }

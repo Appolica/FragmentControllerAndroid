@@ -38,6 +38,7 @@ public class FragmentTwo extends Fragment {
                 ((FragmentController) getParentFragment()).push(new FragmentController.PushBuilder()
                         .addToBackStack(true)
                         .fragment(fragmentsType, fragmentsType.getTag())
+                        .build()
                 );
             }
         });
