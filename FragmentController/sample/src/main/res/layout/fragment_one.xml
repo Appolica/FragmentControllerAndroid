@@ -14,11 +14,13 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
+        <Button
             android:id="@+id/middleText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Empty"
+            android:background="@android:color/holo_purple"
+            android:padding="20dp"
+            android:text="Pop to root"
             android:textSize="30dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"

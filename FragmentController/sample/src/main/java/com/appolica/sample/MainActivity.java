@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         FragmentController fragmentController = (FragmentController) getSupportFragmentManager().findFragmentByTag(CONTROLLER_TAG);
 
-        if (!fragmentController.pop()) {
+        if (!fragmentController.pop(false)) {
             super.onBackPressed();
         }
     }
