@@ -57,7 +57,7 @@ public class FragmentOne extends Fragment implements TransitionAnimationManager 
         view.findViewById(R.id.middleText).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((FragmentController) getParentFragment()).popToRoot();
+                getFragmentController().popToRoot();
             }
         });
 
@@ -68,19 +68,18 @@ public class FragmentOne extends Fragment implements TransitionAnimationManager 
             public void onClick(View v) {
                 FragmentsType fragmentsType = FragmentsType.TWO;
 
-                ((FragmentController) getParentFragment()).push(new FragmentController.PushBuilder()
+                getFragmentController().pushBody()
                         .addToBackStack(true)
                         .withAnimation(true)
                         .fragment(fragmentsType, fragmentsType.getTag())
-                        .build()
-                );
+                        .push();
             }
         });
 
         view.findViewById(buttonPrev).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((FragmentController) getParentFragment()).pop(true);
+                (getFragmentController()).pop(true);
             }
         });
 
@@ -90,6 +89,10 @@ public class FragmentOne extends Fragment implements TransitionAnimationManager 
                 model.setNumber(model.getNumber() + 1);
             }
         });
+    }
+
+    private FragmentController getFragmentController() {
+        return (FragmentController) getParentFragment();
     }
 
     @Override

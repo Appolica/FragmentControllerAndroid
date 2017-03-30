@@ -38,28 +38,31 @@ public class FragmentTwo extends Fragment implements TransitionAnimationManager 
             public void onClick(View v) {
                 FragmentsType fragmentsType = FragmentsType.ONE;
 
-                ((FragmentController) getParentFragment()).push(new FragmentController.PushBuilder()
+                getFragmentController().pushBody()
                         .addToBackStack(true)
                         .withAnimation(true)
                         .fragment(fragmentsType, fragmentsType.getTag())
-                        .build()
-                );
+                        .push();
             }
         });
 
         view.findViewById(R.id.buttonPopTo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((FragmentController) getParentFragment()).popTo(FragmentsType.TWO, true, false);
+                getFragmentController().popTo(FragmentsType.TWO, true, false);
             }
         });
 
         view.findViewById(R.id.buttonPrev2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((FragmentController) getParentFragment()).pop(true);
+                getFragmentController().pop(true);
             }
         });
+    }
+
+    private FragmentController getFragmentController() {
+        return (FragmentController) getParentFragment();
     }
 
     @Override

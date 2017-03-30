@@ -8,11 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-/**
- * Created by Alexander Iliev on 25.01.17.
- * Copyright © 2017 Appolica. All rights reserved.
- */
-public class FragmentController extends Fragment {
+import org.jetbrains.annotations.Contract;
+
+public class FragmentController extends Fragment implements PushBody.PushBodyConsumer {
     public static final String FRAGMENT_TYPE_ARGUMENT = "fragmentTypeArgument";
     private static final String ROOT_FRAGMENT_TAG = "root";
 
@@ -23,32 +21,46 @@ public class FragmentController extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        ControllerFragmentType fragmentType;
+        final ControllerFragmentType fragmentType = getFragmentType();
 
+        restore(savedInstanceState, fragmentType);
+
+        return inflater.inflate(R.layout.fragment_container, container, false);
+    }
+
+    private ControllerFragmentType getFragmentType() {
+        ControllerFragmentType fragmentType;
         if (getArguments() == null || getArguments().getSerializable(FRAGMENT_TYPE_ARGUMENT) == null) {
             throw new IllegalStateException("Root fragment is not defined!");
         } else {
             fragmentType = (ControllerFragmentType) getArguments().getSerializable(FRAGMENT_TYPE_ARGUMENT);
         }
-
-        if (savedInstanceState == null) {
-            push(new FragmentController.PushBuilder()
-                    .addToBackStack(true)
-                    .fragment(fragmentType, ROOT_FRAGMENT_TAG)
-                    .build()
-            );
-        }
-        return inflater.inflate(R.layout.fragment_container, container, false);
+        return fragmentType;
     }
 
-    public void push(PushBody body) {
-        FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
+    private void restore(Bundle savedInstanceState, ControllerFragmentType fragmentType) {
+        if (savedInstanceState == null) {
+            pushBody()
+                    .addToBackStack(true)
+                    .fragment(fragmentType, ROOT_FRAGMENT_TAG)
+                    .push();
+        }
+    }
 
-        if (body.isToBackStack()) {
+    public PushBody.Builder pushBody() {
+        return PushBody.Builder.instance(this);
+    }
+
+    @Override
+    public void push(PushBody body) {
+        final FragmentManager fragmentManager = getChildFragmentManager();
+        final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        if (body.addToBackStack()) {
             fragmentTransaction.addToBackStack(body.getTag());
         }
 
-        if (body.isWithAnimation()) {
+        if (body.withAnimation()) {
             fragmentTransaction.setCustomAnimations(
                     R.anim.slide_in_right,
                     R.anim.slide_out_left,
@@ -59,108 +71,81 @@ public class FragmentController extends Fragment {
         fragmentTransaction
                 .replace(R.id.fragmentPlace, body.getFragment(), body.getTag())
                 .commit();
+
+        if (body.immediate()) {
+            fragmentManager.executePendingTransactions();
+        }
     }
 
     public boolean pop(boolean withAnimation) {
-        FragmentManager fragmentManager = getChildFragmentManager();
+        final FragmentManager fragmentManager = getChildFragmentManager();
 
         if (!withAnimation) {
-            for (Fragment fragment : fragmentManager.getFragments()) {
-                if (fragment instanceof TransitionAnimationManager) {
-                    ((TransitionAnimationManager) fragment).disableNextAnimation();
-                }
-            }
+            disableNextAnimation(fragmentManager);
         }
 
         return fragmentManager.getBackStackEntryCount() != 1 &&
                 fragmentManager.popBackStackImmediate();
     }
 
-    public boolean popTo(ControllerFragmentType fragmentType, boolean inclusive, boolean withAnimation) {
-        FragmentManager fragmentManager = getChildFragmentManager();
+    public void popAsync(boolean withAnimation) {
+        final FragmentManager fragmentManager = getChildFragmentManager();
 
         if (!withAnimation) {
-            for (Fragment fragment : fragmentManager.getFragments()) {
-                if (fragment instanceof TransitionAnimationManager) {
-                    ((TransitionAnimationManager) fragment).disableNextAnimation();
-                }
-            }
+            disableNextAnimation(fragmentManager);
         }
 
+        if (fragmentManager.getBackStackEntryCount() != 1) {
+            fragmentManager.popBackStack();
+        }
+    }
+
+    public boolean popTo(ControllerFragmentType fragmentType, boolean inclusive, boolean withAnimation) {
+        final FragmentManager fragmentManager = getChildFragmentManager();
+
+        if (!withAnimation) {
+            disableNextAnimation(fragmentManager);
+        }
+
+        int flag = getFlagInclusive(inclusive);
+
+        return fragmentManager.popBackStackImmediate(fragmentType.getTag(), flag);
+    }
+
+    public void popToAsync(ControllerFragmentType fragmentType, boolean inclusive, boolean withAnimation) {
+        final FragmentManager fragmentManager = getChildFragmentManager();
+
+        if (!withAnimation) {
+            disableNextAnimation(fragmentManager);
+        }
+
+        int flag = getFlagInclusive(inclusive);
+
+        fragmentManager.popBackStack(fragmentType.getTag(), flag);
+    }
+
+    @Contract(pure = true)
+    private int getFlagInclusive(boolean inclusive) {
         int flag = 0;
 
         if (inclusive) {
             flag = FragmentManager.POP_BACK_STACK_INCLUSIVE;
         }
 
-        return fragmentManager.popBackStackImmediate(fragmentType.getTag(), flag);
+        return flag;
+    }
+
+    private void disableNextAnimation(FragmentManager fragmentManager) {
+        for (Fragment fragment : fragmentManager.getFragments()) {
+            if (fragment instanceof TransitionAnimationManager) {
+                ((TransitionAnimationManager) fragment).disableNextAnimation();
+            }
+        }
     }
 
     public boolean popToRoot() {
         return getChildFragmentManager().popBackStackImmediate(ROOT_FRAGMENT_TAG, 0);
     }
 
-    public static class PushBuilder {
-        private ControllerFragmentType fragmentType;
-        private String tag;
-        private boolean toBackStack;
-        private boolean withAnimation = false;
-
-        public PushBuilder addToBackStack(boolean toBackStack) {
-            this.toBackStack = toBackStack;
-            return this;
-        }
-
-        public PushBuilder fragment(ControllerFragmentType fragmentType, String tag) {
-            this.fragmentType = fragmentType;
-            this.tag = tag;
-            return this;
-        }
-
-        public PushBuilder withAnimation(boolean withAnimation) {
-            this.withAnimation = withAnimation;
-            return this;
-        }
-
-        public PushBody build() {
-            if (fragmentType == null) {
-                throw new IllegalStateException("FragmentType must not be null");
-            } else if (tag == null) {
-                throw new IllegalStateException("Tag must not be null");
-            }
-
-            return new PushBody(fragmentType, tag, toBackStack, withAnimation);
-        }
-    }
-
-    private static class PushBody {
-        private ControllerFragmentType fragmentType;
-        private String tag;
-        private boolean toBackStack;
-        private boolean withAnimation;
-
-        public PushBody(ControllerFragmentType fragmentType, String tag, boolean toBackStack, boolean withAnimation) {
-            this.fragmentType = fragmentType;
-            this.tag = tag;
-            this.toBackStack = toBackStack;
-            this.withAnimation = withAnimation;
-        }
-
-        public boolean isWithAnimation() {
-            return withAnimation;
-        }
-
-        public Fragment getFragment() {
-            return fragmentType.getInstance();
-        }
-
-        public String getTag() {
-            return tag;
-        }
-
-        public boolean isToBackStack() {
-            return toBackStack;
-        }
-    }
 }
 
