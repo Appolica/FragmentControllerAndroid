@@ -3,15 +3,13 @@ package com.appolica.sample.fragment;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 
 import com.appolica.fragmentcontroller.FragmentController;
-import com.appolica.fragmentcontroller.TransitionAnimationManager;
+import com.appolica.fragmentcontroller.fragment.DisabledAnimationFragment;
 import com.appolica.sample.R;
 import com.appolica.sample.databinding.FragmentOneBinding;
 import com.appolica.sample.model.TestModel;
@@ -22,12 +20,11 @@ import static com.appolica.sample.R.id.buttonNext;
 import static com.appolica.sample.R.id.buttonPrev;
 
 
-public class FragmentOne extends Fragment implements TransitionAnimationManager {
+public class FragmentOne extends DisabledAnimationFragment {
     private static final String MODEL_STATE_KEY = "model_key";
     private static final String TAG = "FragmentOne";
     private TestModel model;
     private SoftReference<FragmentOneBinding> binding;
-    private boolean animateTransitions = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -96,25 +93,8 @@ public class FragmentOne extends Fragment implements TransitionAnimationManager 
     }
 
     @Override
-    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-        if (!animateTransitions) {
-            animateTransitions = true;
-            Animation a = new Animation() {
-            };
-            a.setDuration(0);
-            return a;
-        }
-        return super.onCreateAnimation(transit, enter, nextAnim);
-    }
-
-    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable(MODEL_STATE_KEY, model);
-    }
-
-    @Override
-    public void disableNextAnimation() {
-        animateTransitions = false;
     }
 }

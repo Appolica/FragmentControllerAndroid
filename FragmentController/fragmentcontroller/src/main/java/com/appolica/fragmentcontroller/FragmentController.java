@@ -8,6 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.appolica.fragmentcontroller.fragment.ControllerFragmentType;
+import com.appolica.fragmentcontroller.fragment.animation.TransitionAnimationManager;
+
 import org.jetbrains.annotations.Contract;
 
 public class FragmentController extends Fragment implements PushBody.PushBodyConsumer {
@@ -60,12 +63,13 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
             fragmentTransaction.addToBackStack(body.getTag());
         }
 
-        if (body.withAnimation()) {
+        final PushBody.Builder.TransitionAnimationBody animations = body.getTransitionAnimations();
+        if (animations != null) {
             fragmentTransaction.setCustomAnimations(
-                    R.anim.slide_in_right,
-                    R.anim.slide_out_left,
-                    android.R.anim.slide_in_left,
-                    android.R.anim.slide_out_right);
+                    animations.getEnter(),
+                    animations.getExit(),
+                    animations.getPopEnter(),
+                    animations.getPopExit());
         }
 
         fragmentTransaction
@@ -145,6 +149,10 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
 
     public boolean popToRoot() {
         return getChildFragmentManager().popBackStackImmediate(ROOT_FRAGMENT_TAG, 0);
+    }
+
+    public void popToRootAsync() {
+        getChildFragmentManager().popBackStack(ROOT_FRAGMENT_TAG, 0);
     }
 
 }

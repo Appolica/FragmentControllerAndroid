@@ -1,4 +1,4 @@
-package com.appolica.fragmentcontroller;
+package com.appolica.fragmentcontroller.fragment;
 
 import android.support.v4.app.Fragment;
 

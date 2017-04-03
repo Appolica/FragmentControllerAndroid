@@ -3,6 +3,8 @@ package com.appolica.fragmentcontroller;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
+import com.appolica.fragmentcontroller.fragment.ControllerFragmentType;
+
 import org.jetbrains.annotations.Contract;
 
 class PushBody {
@@ -11,8 +13,9 @@ class PushBody {
     private ControllerFragmentType fragmentType;
 
     private boolean addToBackStack;
-    private boolean withAnimation;
+
     private boolean immediate;
+    private Builder.TransitionAnimationBody transitionAnimations;
 
     public PushBody() {
 
@@ -46,14 +49,6 @@ class PushBody {
         this.addToBackStack = addToBackStack;
     }
 
-    public boolean withAnimation() {
-        return withAnimation;
-    }
-
-    public void setWithAnimation(boolean withAnimation) {
-        this.withAnimation = withAnimation;
-    }
-
     public void setImmediate(boolean immediate) {
         this.immediate = immediate;
     }
@@ -62,16 +57,24 @@ class PushBody {
         return immediate;
     }
 
+    public void setTransitionAnimations(Builder.TransitionAnimationBody transitionAnimations) {
+        this.transitionAnimations = transitionAnimations;
+    }
+
+    public Builder.TransitionAnimationBody getTransitionAnimations() {
+        return transitionAnimations;
+    }
+
     public static class Builder {
         private String tag;
 
         private ControllerFragmentType fragmentType;
 
         private boolean addToBackStack = false;
-        private boolean withAnimation = false;
         private boolean immediate = false;
 
         private PushBodyConsumer bodyConsumer;
+        private TransitionAnimationBody transitionAnimation = null;
 
         @Contract("_ -> !null")
         public static Builder instance(@NonNull PushBodyConsumer bodyConsumer) {
@@ -94,8 +97,17 @@ class PushBody {
         }
 
         public Builder withAnimation(boolean withAnimation) {
-            this.withAnimation = withAnimation;
+            if (withAnimation) {
+                transitionAnimation = new TransitionAnimationBody();
+            } else {
+                transitionAnimation = null;
+            }
+
             return this;
+        }
+
+        public TransitionAnimationBody customAnimation() {
+            return new TransitionAnimationBody();
         }
 
         public Builder immediate(boolean immediate) {
@@ -115,7 +127,7 @@ class PushBody {
             pushBody.setFragmentType(fragmentType);
             pushBody.setTag(tag);
             pushBody.setAddToBackStack(addToBackStack);
-            pushBody.setWithAnimation(withAnimation);
+            pushBody.setTransitionAnimations(transitionAnimation);
             pushBody.setImmediate(immediate);
 
             return pushBody;
@@ -126,6 +138,57 @@ class PushBody {
             bodyConsumer.push(pushBody);
         }
 
+        private void setTransitionAnimation(TransitionAnimationBody transitionAnimation) {
+            this.transitionAnimation = transitionAnimation;
+        }
+
+        public class TransitionAnimationBody {
+            private int enter = R.anim.slide_in_right;
+            private int exit = R.anim.slide_out_left;
+            private int popEnter = android.R.anim.slide_in_left;
+            private int popExit = android.R.anim.slide_out_right;
+
+            public TransitionAnimationBody enter(int enter) {
+                this.enter = enter;
+                return this;
+            }
+
+            public TransitionAnimationBody exit(int exit) {
+                this.exit = exit;
+                return this;
+            }
+
+            public TransitionAnimationBody popEnter(int popEnter) {
+                this.popEnter = popEnter;
+                return this;
+            }
+
+            public TransitionAnimationBody popExit(int popExit) {
+                this.popEnter = popExit;
+                return this;
+            }
+
+            public PushBody.Builder end() {
+                PushBody.Builder.this.setTransitionAnimation(this);
+                return PushBody.Builder.this;
+            }
+
+            public int getEnter() {
+                return enter;
+            }
+
+            public int getExit() {
+                return exit;
+            }
+
+            public int getPopEnter() {
+                return popEnter;
+            }
+
+            public int getPopExit() {
+                return popExit;
+            }
+        }
     }
 
     public interface PushBodyConsumer {
