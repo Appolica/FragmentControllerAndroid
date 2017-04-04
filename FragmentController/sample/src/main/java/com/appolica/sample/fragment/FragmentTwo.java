@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.appolica.fragmentcontroller.FragmentController;
 import com.appolica.fragmentcontroller.fragment.DisabledAnimationFragment;
@@ -31,9 +30,9 @@ public class FragmentTwo extends DisabledAnimationFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ((TextView) view.findViewById(R.id.fragmentLabel)).setText("Test text");
+        binding.fragmentLabel.setText("Test text");
 
-        view.findViewById(R.id.buttonNext2).setOnClickListener(new View.OnClickListener() {
+        binding.buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentsType fragmentsType = FragmentsType.ONE;
@@ -46,14 +45,14 @@ public class FragmentTwo extends DisabledAnimationFragment {
             }
         });
 
-        view.findViewById(R.id.buttonPopTo).setOnClickListener(new View.OnClickListener() {
+        binding.buttonPopTo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getFragmentController().popTo(FragmentsType.TWO, true, false);
             }
         });
 
-        view.findViewById(R.id.buttonPrev2).setOnClickListener(new View.OnClickListener() {
+        binding.buttonPrev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getFragmentController().popToRoot();

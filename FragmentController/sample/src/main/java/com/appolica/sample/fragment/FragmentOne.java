@@ -16,9 +16,6 @@ import com.appolica.sample.model.TestModel;
 
 import java.lang.ref.SoftReference;
 
-import static com.appolica.sample.R.id.buttonNext;
-import static com.appolica.sample.R.id.buttonPrev;
-
 
 public class FragmentOne extends DisabledAnimationFragment {
     private static final String MODEL_STATE_KEY = "model_key";
@@ -51,7 +48,7 @@ public class FragmentOne extends DisabledAnimationFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        view.findViewById(R.id.middleText).setOnClickListener(new View.OnClickListener() {
+        binding.get().middleText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getFragmentController().popToRoot();
@@ -60,7 +57,7 @@ public class FragmentOne extends DisabledAnimationFragment {
 
         binding.get().getRoot().setBackgroundResource(android.R.color.holo_orange_light);
 
-        view.findViewById(buttonNext).setOnClickListener(new View.OnClickListener() {
+        binding.get().buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentsType fragmentsType = FragmentsType.TWO;
@@ -73,14 +70,14 @@ public class FragmentOne extends DisabledAnimationFragment {
             }
         });
 
-        view.findViewById(buttonPrev).setOnClickListener(new View.OnClickListener() {
+        binding.get().buttonPrev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 (getFragmentController()).pop(true);
             }
         });
 
-        view.findViewById(R.id.modelEditButton).setOnClickListener(new View.OnClickListener() {
+        binding.get().modelEditButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 model.setNumber(model.getNumber() + 1);
