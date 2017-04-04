@@ -90,6 +90,11 @@ class PushBody {
             return this;
         }
 
+        public Builder fragment(ControllerFragmentType fragmentType) {
+            fragment(fragmentType, fragmentType.getTag());
+            return this;
+        }
+
         public Builder fragment(ControllerFragmentType fragmentType, String tag) {
             this.fragmentType = fragmentType;
             this.tag = tag;

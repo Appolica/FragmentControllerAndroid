@@ -3,6 +3,8 @@ package com.appolica.sample.fragment;
 import android.support.v4.app.Fragment;
 
 import com.appolica.fragmentcontroller.fragment.ControllerFragmentType;
+import com.appolica.sample.fragment.one.FragmentOne;
+import com.appolica.sample.fragment.two.FragmentTwo;
 
 
 public enum FragmentsType implements ControllerFragmentType {
