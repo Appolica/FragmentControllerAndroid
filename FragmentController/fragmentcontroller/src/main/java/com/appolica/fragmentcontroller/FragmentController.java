@@ -41,14 +41,14 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        final ControllerFragmentType rootType = getRootType();
+        final ControllerFragmentType rootType = getRootFromArgs();
 
-        restore(savedInstanceState, rootType);
+        addRoot(savedInstanceState, rootType);
 
         return inflater.inflate(R.layout.fragment_container, container, false);
     }
 
-    private ControllerFragmentType getRootType() {
+    private ControllerFragmentType getRootFromArgs() {
         final Bundle arguments = getArguments();
 
         final ControllerFragmentType fragmentType;
@@ -71,7 +71,7 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
         return fragmentType;
     }
 
-    private void restore(Bundle savedInstanceState, ControllerFragmentType fragmentType) {
+    private void addRoot(Bundle savedInstanceState, ControllerFragmentType fragmentType) {
         if (savedInstanceState == null) {
             pushBody()
                     .addToBackStack(true)
