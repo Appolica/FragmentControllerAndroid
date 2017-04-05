@@ -114,9 +114,7 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
     public boolean pop(boolean withAnimation) {
         final FragmentManager fragmentManager = getChildFragmentManager();
 
-        if (!withAnimation) {
-            disableNextAnimation(fragmentManager);
-        }
+        disableLastEntryAnimation(withAnimation, fragmentManager);
 
         return fragmentManager.getBackStackEntryCount() != 1 &&
                 fragmentManager.popBackStackImmediate();
@@ -125,12 +123,18 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
     public void popAsync(boolean withAnimation) {
         final FragmentManager fragmentManager = getChildFragmentManager();
 
-        if (!withAnimation) {
-            disableNextAnimation(fragmentManager);
-        }
+        disableLastEntryAnimation(withAnimation, fragmentManager);
 
         if (fragmentManager.getBackStackEntryCount() != 1) {
             fragmentManager.popBackStack();
+        }
+    }
+
+    private void disableLastEntryAnimation(boolean withAnimation, FragmentManager fragmentManager) {
+        if (!withAnimation) {
+            final int lastEntry = fragmentManager.getBackStackEntryCount() - 1;
+            final String lastTag = getTagFromEntry(fragmentManager, lastEntry);
+            disableNextAnimationTo(fragmentManager, lastTag);
         }
     }
 
@@ -138,7 +142,7 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
         final FragmentManager fragmentManager = getChildFragmentManager();
 
         if (!withAnimation) {
-            disableNextAnimation(fragmentManager);
+            disableNextAnimationTo(fragmentManager, fragmentType.getTag());
         }
 
         int flag = getFlagInclusive(inclusive);
@@ -150,7 +154,7 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
         final FragmentManager fragmentManager = getChildFragmentManager();
 
         if (!withAnimation) {
-            disableNextAnimation(fragmentManager);
+            disableNextAnimationTo(fragmentManager, fragmentType.getTag());
         }
 
         int flag = getFlagInclusive(inclusive);
@@ -169,11 +173,25 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
         return flag;
     }
 
-    private void disableNextAnimation(FragmentManager fragmentManager) {
-        for (Fragment fragment : FragmentUtil.getFragments(fragmentManager)) {
+    private String getTagFromEntry(FragmentManager fragmentManager, int entry) {
+        return fragmentManager.getBackStackEntryAt(entry).getName();
+    }
+
+    private void disableNextAnimationTo(FragmentManager fragmentManager, String tag) {
+        final int entryCount = fragmentManager.getBackStackEntryCount();
+        final int lastEntry = entryCount - 1;
+
+        String entryTag = null;
+        int entry = lastEntry;
+        while (!tag.equals(entryTag) || entry > 0) {
+            entryTag = getTagFromEntry(fragmentManager, entry);
+
+            final Fragment fragment = fragmentManager.findFragmentByTag(entryTag);
             if (fragment instanceof TransitionAnimationManager) {
                 ((TransitionAnimationManager) fragment).disableNextAnimation();
             }
+
+            entry--;
         }
     }
 

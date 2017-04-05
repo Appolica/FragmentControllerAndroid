@@ -7,17 +7,17 @@ import com.appolica.fragmentcontroller.fragment.ControllerFragmentType;
 
 import org.jetbrains.annotations.Contract;
 
-class PushBody {
+public class PushBody {
     private String tag;
 
     private ControllerFragmentType fragmentType;
 
     private boolean addToBackStack;
-
     private boolean immediate;
+
     private Builder.TransitionAnimationBody transitionAnimations;
 
-    public PushBody() {
+    private PushBody() {
 
     }
 
