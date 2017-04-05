@@ -10,22 +10,28 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.appolica.fragmentcontroller.fragment.ControllerFragmentType;
+import com.appolica.fragmentcontroller.fragment.FragmentTypeImpl;
 import com.appolica.fragmentcontroller.fragment.animation.TransitionAnimationManager;
 import com.appolica.fragmentcontroller.util.FragmentUtil;
 
 import org.jetbrains.annotations.Contract;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class FragmentController extends Fragment implements PushBody.PushBodyConsumer, OnBackPressedListener {
     public static final String FRAGMENT_TYPE_ARGUMENT = "fragmentTypeArgument";
     private static final String ROOT_FRAGMENT_TAG = "root";
 
-    public static FragmentController instance(Class<? extends Fragment> fragmentClass) {
-//        Bundle bundle = new Bundle();
-//        bundle.putSerializable(FragmentController.FRAGMENT_TYPE_ARGUMENT, fragmentClass);
+    public static FragmentController instance(Class<? extends Fragment> rootClass) {
+        final FragmentController controller = new FragmentController();
 
-        return new FragmentController();
+        final Bundle args = new Bundle();
+        args.putSerializable(FragmentController.FRAGMENT_TYPE_ARGUMENT, rootClass);
+
+        controller.setArguments(args);
+
+        return controller;
     }
 
     public FragmentController() {
@@ -35,20 +41,33 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        final ControllerFragmentType fragmentType = getFragmentType();
+        final ControllerFragmentType rootType = getRootType();
 
-        restore(savedInstanceState, fragmentType);
+        restore(savedInstanceState, rootType);
 
         return inflater.inflate(R.layout.fragment_container, container, false);
     }
 
-    private ControllerFragmentType getFragmentType() {
-        ControllerFragmentType fragmentType;
-        if (getArguments() == null || getArguments().getSerializable(FRAGMENT_TYPE_ARGUMENT) == null) {
+    private ControllerFragmentType getRootType() {
+        final Bundle arguments = getArguments();
+
+        final ControllerFragmentType fragmentType;
+        final Serializable serializedClass = arguments.getSerializable(FRAGMENT_TYPE_ARGUMENT);
+
+        if (arguments == null || serializedClass == null) {
+
             throw new IllegalStateException("Root fragment is not defined!");
+
         } else {
-            fragmentType = (ControllerFragmentType) getArguments().getSerializable(FRAGMENT_TYPE_ARGUMENT);
+
+            if (!(serializedClass instanceof Class)) {
+                throw new IllegalStateException("You must provide provide root fragment of type Class<? extends Fragment>.");
+            }
+
+            final Class<? extends Fragment> rootClass = (Class<? extends Fragment>) serializedClass;
+            fragmentType = new FragmentTypeImpl(rootClass);
         }
+
         return fragmentType;
     }
 

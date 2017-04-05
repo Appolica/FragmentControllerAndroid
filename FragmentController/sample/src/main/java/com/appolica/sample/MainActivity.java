@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.appolica.fragmentcontroller.FragmentController;
-import com.appolica.sample.fragment.FragmentsType;
+import com.appolica.sample.fragment.one.FragmentOne;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -16,15 +16,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
-            FragmentController fragmentController = new FragmentController();
-
-            Bundle bundle = new Bundle();
-            bundle.putSerializable(FragmentController.FRAGMENT_TYPE_ARGUMENT, FragmentsType.ONE);
-
-            fragmentController.setArguments(bundle);
 
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, fragmentController, CONTROLLER_TAG)
+                    .replace(R.id.container, FragmentController.instance(FragmentOne.class), CONTROLLER_TAG)
                     .commit();
         }
     }
