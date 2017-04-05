@@ -1,6 +1,7 @@
 package com.appolica.fragmentcontroller;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -10,12 +11,22 @@ import android.view.ViewGroup;
 
 import com.appolica.fragmentcontroller.fragment.ControllerFragmentType;
 import com.appolica.fragmentcontroller.fragment.animation.TransitionAnimationManager;
+import com.appolica.fragmentcontroller.util.FragmentUtil;
 
 import org.jetbrains.annotations.Contract;
 
-public class FragmentController extends Fragment implements PushBody.PushBodyConsumer {
+import java.util.List;
+
+public class FragmentController extends Fragment implements PushBody.PushBodyConsumer, OnBackPressedListener {
     public static final String FRAGMENT_TYPE_ARGUMENT = "fragmentTypeArgument";
     private static final String ROOT_FRAGMENT_TAG = "root";
+
+    public static FragmentController instance(Class<? extends Fragment> fragmentClass) {
+//        Bundle bundle = new Bundle();
+//        bundle.putSerializable(FragmentController.FRAGMENT_TYPE_ARGUMENT, fragmentClass);
+
+        return new FragmentController();
+    }
 
     public FragmentController() {
     }
@@ -140,7 +151,7 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
     }
 
     private void disableNextAnimation(FragmentManager fragmentManager) {
-        for (Fragment fragment : fragmentManager.getFragments()) {
+        for (Fragment fragment : FragmentUtil.getFragments(fragmentManager)) {
             if (fragment instanceof TransitionAnimationManager) {
                 ((TransitionAnimationManager) fragment).disableNextAnimation();
             }
@@ -155,5 +166,34 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
         getChildFragmentManager().popBackStack(ROOT_FRAGMENT_TAG, 0);
     }
 
-}
+    @Override
+    public boolean onBackPressed() {
+        final Fragment topFragment = getTopFragment();
 
+        boolean handled = false;
+        if (topFragment != null) {
+            if (topFragment instanceof OnBackPressedListener) {
+                handled = ((OnBackPressedListener) topFragment).onBackPressed();
+            }
+        }
+
+        if (!handled) {
+            handled = pop(true);
+        }
+
+        return handled;
+    }
+
+    @Nullable
+    private Fragment getTopFragment() {
+        final List<Fragment> fragments = FragmentUtil.getFragments(getChildFragmentManager());
+
+        final int size = fragments.size();
+        if (size > 0) {
+            return fragments.get(size - 1);
+        }
+
+        return null;
+    }
+
+}

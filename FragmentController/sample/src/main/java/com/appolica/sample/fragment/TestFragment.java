@@ -8,15 +8,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 
 import com.appolica.fragmentcontroller.FragmentController;
+import com.appolica.fragmentcontroller.OnBackPressedListener;
 import com.appolica.sample.R;
 
 
-public class TestFragment extends Fragment {
+public class TestFragment extends Fragment implements OnBackPressedListener {
 
     private static final String TAG = "TestFragment";
+    private FragmentController childController;
 
     @Nullable
     @Override
@@ -27,39 +28,37 @@ public class TestFragment extends Fragment {
     @Override
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        childController = new FragmentController();
+        final Bundle args = new Bundle();
+
+        args.putSerializable(FragmentController.FRAGMENT_TYPE_ARGUMENT, FragmentsType.ONE);
+
+        childController.setArguments(args);
+
+        getChildFragmentManager().beginTransaction()
+                .replace(R.id.container, childController, "FrController")
+                .commitNow();
     }
 
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-        final Animation animation = AnimationUtils.loadAnimation(getContext(), nextAnim);
+//        final Animation animation = AnimationUtils.loadAnimation(getContext(), nextAnim);
 
-
-
-        return animation;
+        return super.onCreateAnimation(transit, enter, nextAnim);
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-    }
-
-    private FragmentController getFragmentController() {
+    private FragmentController getParentFrController() {
         return (FragmentController) getParentFragment();
     }
 
     public void onViewFullyAppeared() {
         Log.d(TAG, "onViewFullyAppeared: ");
-        getFragmentController().pop(true);
+        getParentFrController().pop(true);
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        return childController.onBackPressed();
     }
 }

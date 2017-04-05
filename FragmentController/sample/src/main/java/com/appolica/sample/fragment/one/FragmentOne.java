@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.appolica.fragmentcontroller.FragmentController;
+import com.appolica.fragmentcontroller.OnBackPressedListener;
 import com.appolica.fragmentcontroller.fragment.DisabledAnimationFragment;
 import com.appolica.sample.R;
 import com.appolica.sample.databinding.FragmentOneBinding;
@@ -15,7 +16,7 @@ import com.appolica.sample.fragment.FragmentsType;
 import com.appolica.sample.model.TestModel;
 
 
-public class FragmentOne extends DisabledAnimationFragment implements FragmentOneClickListener {
+public class FragmentOne extends DisabledAnimationFragment implements FragmentOneClickListener, OnBackPressedListener {
     private static final String MODEL_STATE_KEY = "model_key";
     private static final String TAG = "FragmentOne";
     private FragmentOneBinding binding;
@@ -77,5 +78,10 @@ public class FragmentOne extends DisabledAnimationFragment implements FragmentOn
 
     private FragmentController getFragmentController() {
         return (FragmentController) getParentFragment();
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        return false;
     }
 }

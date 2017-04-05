@@ -8,16 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.appolica.fragmentcontroller.FragmentController;
+import com.appolica.fragmentcontroller.OnBackPressedListener;
 import com.appolica.fragmentcontroller.fragment.DisabledAnimationFragment;
 import com.appolica.sample.R;
 import com.appolica.sample.databinding.FragmentTwoBinding;
 import com.appolica.sample.fragment.FragmentsType;
 
-public class FragmentTwo extends DisabledAnimationFragment implements FragmentTwoClickListener {
+public class FragmentTwo extends DisabledAnimationFragment implements FragmentTwoClickListener, OnBackPressedListener {
     private static final String TAG = "FragmentTwo";
 
     private FragmentTwoBinding binding;
-    private boolean animateTransitions = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -33,15 +33,21 @@ public class FragmentTwo extends DisabledAnimationFragment implements FragmentTw
 
         binding.setClickListener(this);
 
+        binding.buttonFail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragmentController()
+                        .pushBody()
+                        .addToBackStack(true)
+                        .withAnimation(true)
+                        .fragment(FragmentsType.TEST)
+                        .push();
+            }
+        });
     }
 
     private FragmentController getFragmentController() {
         return (FragmentController) getParentFragment();
-    }
-
-    @Override
-    public void disableNextAnimation() {
-        animateTransitions = false;
     }
 
     @Override
@@ -61,5 +67,10 @@ public class FragmentTwo extends DisabledAnimationFragment implements FragmentTw
     @Override
     public void onPopToClick() {
         getFragmentController().popTo(FragmentsType.TWO, true, false);
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        return getFragmentController().pop(true);
     }
 }
