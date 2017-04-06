@@ -9,8 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.appolica.fragmentcontroller.fragment.ControllerFragmentType;
-import com.appolica.fragmentcontroller.fragment.FragmentTypeImpl;
+import com.appolica.fragmentcontroller.fragment.FragmentProvider;
+import com.appolica.fragmentcontroller.fragment.FragmentProviderImpl;
 import com.appolica.fragmentcontroller.fragment.animation.TransitionAnimationManager;
 import com.appolica.fragmentcontroller.util.FragmentUtil;
 
@@ -23,6 +23,11 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
     public static final String FRAGMENT_TYPE_ARGUMENT = "fragmentTypeArgument";
     private static final String ROOT_FRAGMENT_TAG = "root";
 
+    /**
+     *
+     * @param rootClass
+     * @return
+     */
     public static FragmentController instance(Class<? extends Fragment> rootClass) {
         final FragmentController controller = new FragmentController();
 
@@ -34,6 +39,9 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
         return controller;
     }
 
+    /**
+     *
+     */
     public FragmentController() {
     }
 
@@ -41,17 +49,17 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        final ControllerFragmentType rootType = getRootFromArgs();
+        final FragmentProvider rootType = getRootFromArgs();
 
         addRoot(savedInstanceState, rootType);
 
         return inflater.inflate(R.layout.fragment_container, container, false);
     }
 
-    private ControllerFragmentType getRootFromArgs() {
+    private FragmentProvider getRootFromArgs() {
         final Bundle arguments = getArguments();
 
-        final ControllerFragmentType fragmentType;
+        final FragmentProvider fragmentType;
         final Serializable serializedClass = arguments.getSerializable(FRAGMENT_TYPE_ARGUMENT);
 
         if (arguments == null || serializedClass == null) {
@@ -65,13 +73,13 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
             }
 
             final Class<? extends Fragment> rootClass = (Class<? extends Fragment>) serializedClass;
-            fragmentType = new FragmentTypeImpl(rootClass);
+            fragmentType = new FragmentProviderImpl(rootClass);
         }
 
         return fragmentType;
     }
 
-    private void addRoot(Bundle savedInstanceState, ControllerFragmentType fragmentType) {
+    private void addRoot(Bundle savedInstanceState, FragmentProvider fragmentType) {
         if (savedInstanceState == null) {
             pushBody()
                     .addToBackStack(true)
@@ -80,6 +88,10 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public PushBody.Builder pushBody() {
         return PushBody.Builder.instance(this);
     }
@@ -111,6 +123,11 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
         }
     }
 
+    /**
+     *
+     * @param withAnimation
+     * @return
+     */
     public boolean pop(boolean withAnimation) {
         final FragmentManager fragmentManager = getChildFragmentManager();
 
@@ -120,6 +137,10 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
                 fragmentManager.popBackStackImmediate();
     }
 
+    /**
+     *
+     * @param withAnimation
+     */
     public void popAsync(boolean withAnimation) {
         final FragmentManager fragmentManager = getChildFragmentManager();
 
@@ -138,7 +159,14 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
         }
     }
 
-    public boolean popTo(ControllerFragmentType fragmentType, boolean inclusive, boolean withAnimation) {
+    /**
+     *
+     * @param fragmentType
+     * @param inclusive
+     * @param withAnimation
+     * @return
+     */
+    public boolean popTo(FragmentProvider fragmentType, boolean inclusive, boolean withAnimation) {
         final FragmentManager fragmentManager = getChildFragmentManager();
 
         if (!withAnimation) {
@@ -150,7 +178,13 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
         return fragmentManager.popBackStackImmediate(fragmentType.getTag(), flag);
     }
 
-    public void popToAsync(ControllerFragmentType fragmentType, boolean inclusive, boolean withAnimation) {
+    /**
+     *
+     * @param fragmentType
+     * @param inclusive
+     * @param withAnimation
+     */
+    public void popToAsync(FragmentProvider fragmentType, boolean inclusive, boolean withAnimation) {
         final FragmentManager fragmentManager = getChildFragmentManager();
 
         if (!withAnimation) {
@@ -195,10 +229,17 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean popToRoot() {
         return getChildFragmentManager().popBackStackImmediate(ROOT_FRAGMENT_TAG, 0);
     }
 
+    /**
+     *
+     */
     public void popToRootAsync() {
         getChildFragmentManager().popBackStack(ROOT_FRAGMENT_TAG, 0);
     }

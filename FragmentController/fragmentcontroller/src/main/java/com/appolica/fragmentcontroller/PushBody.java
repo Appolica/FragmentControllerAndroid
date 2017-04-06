@@ -3,14 +3,17 @@ package com.appolica.fragmentcontroller;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
-import com.appolica.fragmentcontroller.fragment.ControllerFragmentType;
+import com.appolica.fragmentcontroller.fragment.FragmentProvider;
 
 import org.jetbrains.annotations.Contract;
 
+/**
+ *
+ */
 public class PushBody {
     private String tag;
 
-    private ControllerFragmentType fragmentType;
+    private FragmentProvider fragmentType;
 
     private boolean addToBackStack;
     private boolean immediate;
@@ -25,11 +28,11 @@ public class PushBody {
         return fragmentType.getInstance();
     }
 
-    public ControllerFragmentType getFragmentType() {
+    public FragmentProvider getFragmentType() {
         return fragmentType;
     }
 
-    public void setFragmentType(ControllerFragmentType fragmentType) {
+    public void setFragmentType(FragmentProvider fragmentType) {
         this.fragmentType = fragmentType;
     }
 
@@ -65,10 +68,13 @@ public class PushBody {
         return transitionAnimations;
     }
 
+    /**
+     *
+     */
     public static class Builder {
         private String tag;
 
-        private ControllerFragmentType fragmentType;
+        private FragmentProvider fragmentType;
 
         private boolean addToBackStack = false;
         private boolean immediate = false;
@@ -76,31 +82,61 @@ public class PushBody {
         private PushBodyConsumer bodyConsumer;
         private TransitionAnimationBody transitionAnimation = null;
 
+        /**
+         *
+         * @param bodyConsumer
+         * @return
+         */
         @Contract("_ -> !null")
         public static Builder instance(@NonNull PushBodyConsumer bodyConsumer) {
             return new Builder(bodyConsumer);
         }
 
+        /**
+         *
+         * @param bodyConsumer
+         */
         public Builder(PushBodyConsumer bodyConsumer) {
             this.bodyConsumer = bodyConsumer;
         }
 
+        /**
+         *
+         * @param toBackStack
+         * @return
+         */
         public Builder addToBackStack(boolean toBackStack) {
             this.addToBackStack = toBackStack;
             return this;
         }
 
-        public Builder fragment(ControllerFragmentType fragmentType) {
+        /**
+         *
+         * @param fragmentType
+         * @return
+         */
+        public Builder fragment(FragmentProvider fragmentType) {
             fragment(fragmentType, fragmentType.getTag());
             return this;
         }
 
-        public Builder fragment(ControllerFragmentType fragmentType, String tag) {
+        /**
+         *
+         * @param fragmentType
+         * @param tag
+         * @return
+         */
+        public Builder fragment(FragmentProvider fragmentType, String tag) {
             this.fragmentType = fragmentType;
             this.tag = tag;
             return this;
         }
 
+        /**
+         *
+         * @param withAnimation
+         * @return
+         */
         public Builder withAnimation(boolean withAnimation) {
             if (withAnimation) {
                 transitionAnimation = new TransitionAnimationBody();
@@ -111,15 +147,28 @@ public class PushBody {
             return this;
         }
 
+        /**
+         *
+         * @return
+         */
         public TransitionAnimationBody customAnimation() {
             return new TransitionAnimationBody();
         }
 
+        /**
+         *
+         * @param immediate
+         * @return
+         */
         public Builder immediate(boolean immediate) {
             this.immediate = immediate;
             return this;
         }
 
+        /**
+         *
+         * @return
+         */
         public PushBody build() {
             if (fragmentType == null) {
                 throw new IllegalStateException("FragmentType must not be null");
@@ -138,6 +187,9 @@ public class PushBody {
             return pushBody;
         }
 
+        /**
+         *
+         */
         public void push() {
             final PushBody pushBody = build();
             bodyConsumer.push(pushBody);
@@ -147,32 +199,59 @@ public class PushBody {
             this.transitionAnimation = transitionAnimation;
         }
 
+        /**
+         *
+         */
         public class TransitionAnimationBody {
             private int enter = R.anim.slide_in_right;
             private int exit = R.anim.slide_out_left;
             private int popEnter = android.R.anim.slide_in_left;
             private int popExit = android.R.anim.slide_out_right;
 
+            /**
+             *
+             * @param enter
+             * @return
+             */
             public TransitionAnimationBody enter(int enter) {
                 this.enter = enter;
                 return this;
             }
 
+            /**
+             *
+             * @param exit
+             * @return
+             */
             public TransitionAnimationBody exit(int exit) {
                 this.exit = exit;
                 return this;
             }
 
+            /**
+             *
+             * @param popEnter
+             * @return
+             */
             public TransitionAnimationBody popEnter(int popEnter) {
                 this.popEnter = popEnter;
                 return this;
             }
 
+            /**
+             *
+             * @param popExit
+             * @return
+             */
             public TransitionAnimationBody popExit(int popExit) {
                 this.popEnter = popExit;
                 return this;
             }
 
+            /**
+             *
+             * @return
+             */
             public PushBody.Builder end() {
                 PushBody.Builder.this.setTransitionAnimation(this);
                 return PushBody.Builder.this;
@@ -196,7 +275,7 @@ public class PushBody {
         }
     }
 
-    public interface PushBodyConsumer {
+    interface PushBodyConsumer {
         void push(PushBody body);
     }
 }

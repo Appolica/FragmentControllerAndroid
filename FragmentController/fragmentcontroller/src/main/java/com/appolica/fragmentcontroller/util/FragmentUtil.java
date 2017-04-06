@@ -8,11 +8,15 @@ import java.util.List;
 
 public class FragmentUtil {
 
+    /**
+     *
+     * @param fragmentManager
+     * @return
+     */
     public static List<Fragment> getFragments(FragmentManager fragmentManager) {
         final List<Fragment> fragments = new ArrayList<>();
 
-        for (Fragment fragment :
-                fragmentManager.getFragments()) {
+        for (Fragment fragment : fragmentManager.getFragments()) {
             if (fragment != null) {
                 fragments.add(fragment);
             }

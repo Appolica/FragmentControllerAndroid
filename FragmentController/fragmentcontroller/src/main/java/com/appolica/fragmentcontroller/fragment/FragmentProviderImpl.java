@@ -2,16 +2,16 @@ package com.appolica.fragmentcontroller.fragment;
 
 import android.support.v4.app.Fragment;
 
-public class FragmentTypeImpl implements ControllerFragmentType {
+public class FragmentProviderImpl implements FragmentProvider {
 
     private final Class<? extends Fragment> frClass;
     private String tag;
 
-    public FragmentTypeImpl(Class<? extends Fragment> frClass) {
+    public FragmentProviderImpl(Class<? extends Fragment> frClass) {
         this(frClass, frClass.getName());
     }
 
-    public FragmentTypeImpl(Class<? extends Fragment> frClass, String tag) {
+    public FragmentProviderImpl(Class<? extends Fragment> frClass, String tag) {
         this.frClass = frClass;
         this.tag = tag;
     }
