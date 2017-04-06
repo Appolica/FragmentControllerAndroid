@@ -25,16 +25,16 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
 
     /**
      *
-     * @param fragmentType
+     * @param provider
      * @return
      */
-    public static FragmentController instance(FragmentProvider fragmentType) {
+    public static FragmentController instance(FragmentProvider provider) {
         final FragmentController controller = new FragmentController();
 
         final Bundle args = new Bundle();
 
-        args.putSerializable(ARG_ROOT_FRAGMENT, fragmentType.getInstance().getClass());
-        args.putString(ARG_ROOT_TAG, fragmentType.getTag());
+        args.putSerializable(ARG_ROOT_FRAGMENT, provider.getInstance().getClass());
+        args.putString(ARG_ROOT_TAG, provider.getTag());
 
         controller.setArguments(args);
 
@@ -51,11 +51,24 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        final FragmentProvider rootType = getRootFromArgs();
-
-        addRoot(savedInstanceState, rootType);
-
         return inflater.inflate(R.layout.fragment_container, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        final FragmentProvider rootType = getRootFromArgs();
+        addRoot(savedInstanceState, rootType);
+    }
+
+    private void addRoot(Bundle savedInstanceState, FragmentProvider fragmentType) {
+        if (savedInstanceState == null) {
+            pushBody()
+                    .addToBackStack(true)
+                    .fragment(fragmentType)
+                    .push();
+        }
     }
 
     private FragmentProvider getRootFromArgs() {
@@ -83,15 +96,6 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
         }
 
         return fragmentType;
-    }
-
-    private void addRoot(Bundle savedInstanceState, FragmentProvider fragmentType) {
-        if (savedInstanceState == null) {
-            pushBody()
-                    .addToBackStack(true)
-                    .fragment(fragmentType)
-                    .push();
-        }
     }
 
     /**
