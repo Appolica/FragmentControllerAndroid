@@ -2,12 +2,15 @@ package com.appolica.sample.fragment;
 
 import android.support.v4.app.Fragment;
 
-import com.appolica.fragmentcontroller.ControllerFragmentType;
+import com.appolica.fragmentcontroller.fragment.ControllerFragmentType;
+import com.appolica.sample.fragment.one.FragmentOne;
+import com.appolica.sample.fragment.two.FragmentTwo;
 
 
 public enum FragmentsType implements ControllerFragmentType {
     ONE(FragmentOne.class, "FragmentOne"),
-    TWO(FragmentTwo.class, "FragmentTwo");
+    TWO(FragmentTwo.class, "FragmentTwo"),
+    TEST(TestFragment.class, "FragmentTest");
 
     private Class<? extends Fragment> fragmentClass;
     private String tag;

@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="com.appolica.sample.fragment.two.FragmentTwoClickListener"/>
+
+        <variable
+            name="clickListener"
+            type="FragmentTwoClickListener"/>
+
+    </data>
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/content_main"
@@ -13,7 +24,7 @@
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_margin="20dp"
-            android:text="TEST TEXT"
+            android:text="text text"
             android:textSize="25sp"
             app:layout_constraintBottom_toBottomOf="@+id/buttonPopTo"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -27,30 +38,45 @@
             android:layout_margin="20dp"
             android:text="pop to"
             android:textSize="25sp"
+            android:onClick="@{() -> clickListener.onPopToClick()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/buttonNext2"
+            android:id="@+id/buttonNext"
             android:layout_width="200dp"
             android:layout_height="60dp"
             android:text="next"
+            android:onClick="@{() -> clickListener.onNextClick()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/buttonPopTo" />
 
         <Button
-            android:id="@+id/buttonPrev2"
+            android:id="@+id/buttonPrev"
             android:layout_width="200dp"
             android:layout_height="60dp"
             android:layout_marginTop="10dp"
             android:text="previous"
+            android:onClick="@{() -> clickListener.onPrevClick()}"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/buttonNext2" />
+            app:layout_constraintTop_toBottomOf="@+id/buttonNext"/>
+
+        <Button
+            android:id="@+id/buttonFail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:text="Fail"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
     </android.support.constraint.ConstraintLayout>
 </layout>
