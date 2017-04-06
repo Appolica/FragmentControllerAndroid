@@ -20,14 +20,16 @@ import java.io.Serializable;
 import java.util.List;
 
 public class FragmentController extends Fragment implements PushBody.PushBodyConsumer, OnBackPressedListener {
-    public static final String FRAGMENT_TYPE_ARGUMENT = "fragmentTypeArgument";
-    private static final String ROOT_FRAGMENT_TAG = "root";
+    public static final String ARG_ROOT_FRAGMENT = FragmentController.class.getName() + ":ArgRootFragment";
+    public static final String ARG_ROOT_TAG = FragmentController.class.getName() + ":ArgRootTAG";
 
-    public static FragmentController instance(Class<? extends Fragment> rootClass) {
+    public static FragmentController instance(ControllerFragmentType fragmentType) {
         final FragmentController controller = new FragmentController();
 
         final Bundle args = new Bundle();
-        args.putSerializable(FragmentController.FRAGMENT_TYPE_ARGUMENT, rootClass);
+
+        args.putSerializable(ARG_ROOT_FRAGMENT, fragmentType.getInstance().getClass());
+        args.putString(ARG_ROOT_TAG, fragmentType.getTag());
 
         controller.setArguments(args);
 
@@ -52,20 +54,24 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
         final Bundle arguments = getArguments();
 
         final ControllerFragmentType fragmentType;
-        final Serializable serializedClass = arguments.getSerializable(FRAGMENT_TYPE_ARGUMENT);
 
-        if (arguments == null || serializedClass == null) {
+        if (arguments == null
+                || arguments.getSerializable(ARG_ROOT_FRAGMENT) == null
+                || arguments.getString(ARG_ROOT_TAG) == null) {
 
-            throw new IllegalStateException("Root fragment is not defined!");
+            throw new IllegalStateException("Root fragment is not defined or tag not provided!");
 
         } else {
+
+            final Serializable serializedClass = arguments.getSerializable(ARG_ROOT_FRAGMENT);
+            final String tag = arguments.getString(ARG_ROOT_TAG);
 
             if (!(serializedClass instanceof Class)) {
                 throw new IllegalStateException("You must provide provide root fragment of type Class<? extends Fragment>.");
             }
 
             final Class<? extends Fragment> rootClass = (Class<? extends Fragment>) serializedClass;
-            fragmentType = new FragmentTypeImpl(rootClass);
+            fragmentType = new FragmentTypeImpl(rootClass, tag);
         }
 
         return fragmentType;
@@ -75,7 +81,7 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
         if (savedInstanceState == null) {
             pushBody()
                     .addToBackStack(true)
-                    .fragment(fragmentType, ROOT_FRAGMENT_TAG)
+                    .fragment(fragmentType)
                     .push();
         }
     }
@@ -196,11 +202,28 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
     }
 
     public boolean popToRoot() {
-        return getChildFragmentManager().popBackStackImmediate(ROOT_FRAGMENT_TAG, 0);
+        final FragmentManager fragmentManager = getChildFragmentManager();
+        final int entryCount = fragmentManager.getBackStackEntryCount();
+        final int lastEntry = entryCount == 0 ? 0 : entryCount - 1;
+
+        boolean popped = false;
+        for (int index = lastEntry; index > 0; index--) {
+            fragmentManager.popBackStack();
+        }
+
+        fragmentManager.executePendingTransactions();
+
+        return lastEntry > 0;
     }
 
     public void popToRootAsync() {
-        getChildFragmentManager().popBackStack(ROOT_FRAGMENT_TAG, 0);
+        final FragmentManager fragmentManager = getChildFragmentManager();
+        final int entryCount = fragmentManager.getBackStackEntryCount();
+        final int lastEntry = entryCount == 0 ? 0 : entryCount - 1;
+
+        for (int index = lastEntry; index > 0; index--) {
+            fragmentManager.popBackStack();
+        }
     }
 
     @Override
