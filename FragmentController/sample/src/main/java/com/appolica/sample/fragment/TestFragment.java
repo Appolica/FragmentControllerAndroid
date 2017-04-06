@@ -12,7 +12,6 @@ import android.view.animation.Animation;
 import com.appolica.fragmentcontroller.FragmentController;
 import com.appolica.fragmentcontroller.OnBackPressedListener;
 import com.appolica.sample.R;
-import com.appolica.sample.fragment.one.FragmentOne;
 
 
 public class TestFragment extends Fragment implements OnBackPressedListener {
@@ -30,7 +29,7 @@ public class TestFragment extends Fragment implements OnBackPressedListener {
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        childController = FragmentController.instance(FragmentOne.class);
+        childController = FragmentController.instance(FragmentsType.ONE);
 
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.container, childController, "FrController")
