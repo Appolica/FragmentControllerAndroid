@@ -21,9 +21,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.appolica.fragmentcontroller.FragmentController;
 import com.appolica.fragmentcontroller.OnBackPressedListener;
 import com.appolica.fragmentcontroller.fragment.DisabledAnimationFragment;
+import com.appolica.fragmentcontroller.util.FragmentUtil;
 import com.appolica.sample.R;
 import com.appolica.sample.databinding.FragmentOneBinding;
 import com.appolica.sample.fragment.FragmentsType;
@@ -67,12 +67,12 @@ public class FragmentOne extends DisabledAnimationFragment implements FragmentOn
 
     @Override
     public void onPrevClick() {
-        getFragmentController().pop(true);
+        FragmentUtil.getFragmentController(this).pop(true);
     }
 
     @Override
     public void onNextClick() {
-        getFragmentController().pushBody()
+        FragmentUtil.getFragmentController(this).pushBody()
                 .addToBackStack(true)
                 .withAnimation(true)
                 .fragment(FragmentsType.TWO)
@@ -81,17 +81,13 @@ public class FragmentOne extends DisabledAnimationFragment implements FragmentOn
 
     @Override
     public void onPopToRootClick() {
-        getFragmentController().popToRoot();
+        FragmentUtil.getFragmentController(this).popToRoot();
     }
 
     @Override
     public void onBtnIncrementClick() {
         final TestModel model = binding.getModel();
         model.setNumber(model.getNumber() + 1);
-    }
-
-    private FragmentController getFragmentController() {
-        return (FragmentController) getParentFragment();
     }
 
     @Override

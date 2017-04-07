@@ -7,9 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.appolica.fragmentcontroller.FragmentController;
 import com.appolica.fragmentcontroller.OnBackPressedListener;
 import com.appolica.fragmentcontroller.fragment.DisabledAnimationFragment;
+import com.appolica.fragmentcontroller.util.FragmentUtil;
 import com.appolica.sample.R;
 import com.appolica.sample.databinding.FragmentTwoBinding;
 import com.appolica.sample.fragment.FragmentsType;
@@ -36,7 +36,7 @@ public class FragmentTwo extends DisabledAnimationFragment implements FragmentTw
         binding.buttonFail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragmentController()
+                FragmentUtil.getFragmentController(FragmentTwo.this)
                         .pushBody()
                         .addToBackStack(true)
                         .withAnimation(true)
@@ -46,18 +46,15 @@ public class FragmentTwo extends DisabledAnimationFragment implements FragmentTw
         });
     }
 
-    private FragmentController getFragmentController() {
-        return (FragmentController) getParentFragment();
-    }
-
     @Override
     public void onPrevClick() {
-        getFragmentController().pop(true);
+        FragmentUtil.getFragmentController(this).pop(true);
     }
 
     @Override
     public void onNextClick() {
-        getFragmentController().pushBody()
+        FragmentUtil.getFragmentController(this)
+                .pushBody()
                 .addToBackStack(true)
                 .withAnimation(true)
                 .fragment(FragmentsType.ONE)
@@ -66,11 +63,11 @@ public class FragmentTwo extends DisabledAnimationFragment implements FragmentTw
 
     @Override
     public void onPopToClick() {
-        getFragmentController().popTo(FragmentsType.ONE, false, true);
+        FragmentUtil.getFragmentController(this).popTo(FragmentsType.ONE, false, true);
     }
 
     @Override
     public boolean onBackPressed() {
-        return getFragmentController().pop(true);
+        return FragmentUtil.getFragmentController(this).pop(true);
     }
 }

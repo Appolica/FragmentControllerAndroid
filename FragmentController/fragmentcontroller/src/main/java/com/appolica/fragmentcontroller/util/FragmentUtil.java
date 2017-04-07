@@ -17,6 +17,10 @@ package com.appolica.fragmentcontroller.util;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
+import com.appolica.fragmentcontroller.FragmentController;
+
+import org.jetbrains.annotations.Contract;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +44,21 @@ public class FragmentUtil {
         }
 
         return fragments;
+    }
+
+    /**
+     * If you're inside a child fragment of {@link FragmentController} and you want to obtain the
+     * controller's instance, you can use this method. It simply calls
+     * {@link Fragment#getParentFragment()} and casts it to {@link FragmentController} but hides
+     * the ugly casting.
+     *
+     * @param fragment The controller child fragment, from which you want to obtain controller's
+     *                 instance.
+     * @return The {@link FragmentController} that the given fragment is a child of.
+     */
+    @Contract(pure = true)
+    public static FragmentController getFragmentController(Fragment fragment) {
+        return (FragmentController) fragment.getParentFragment();
     }
 
 }
