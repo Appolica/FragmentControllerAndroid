@@ -66,7 +66,7 @@ public class FragmentTwo extends DisabledAnimationFragment implements FragmentTw
 
     @Override
     public void onPopToClick() {
-        getFragmentController().popTo(FragmentsType.TWO, true, true);
+        getFragmentController().popTo(FragmentsType.ONE, false, true);
     }
 
     @Override
