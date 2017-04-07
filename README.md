@@ -27,7 +27,7 @@ Add a container for the FragmentController fragment in your layout:
 ```
 Instantiate the controller by passing it a root FragmentProvider:
 ```java
-FragmentController frController = FragmentController.instance(rootProvider);
+final FragmentController frController = FragmentController.instance(rootProvider);
 ```
 
 Then add the controller fragment:
@@ -67,5 +67,7 @@ frController.pushBody()
 If you are inside one of the controller's children and you want to obtain the controller's instance, you can do so by using
 this handy method:
 ```java
-FragmentController frController = FragmentUtil.getFragmentController(this);
+final FragmentController frController = FragmentUtil.getFragmentController(this);
 ```
+
+
