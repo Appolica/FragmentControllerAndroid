@@ -17,17 +17,29 @@ package com.appolica.fragmentcontroller.fragment;
 import android.support.v4.app.Fragment;
 
 /**
- *
+ * An implementation of {@link FragmentProvider}.
  */
 public class FragmentProviderImpl implements FragmentProvider {
 
     private final Class<? extends Fragment> frClass;
     private String tag;
 
+    /**
+     * Create a {@link FragmentProvider} for your fragment, by giving only it's class object.
+     * The class name will be used as a tag.
+     *
+     * @param frClass Your fragment's class object.
+     */
     public FragmentProviderImpl(Class<? extends Fragment> frClass) {
         this(frClass, frClass.getName());
     }
 
+    /**
+     * Create a {@link FragmentProvider} for your fragment, by giving it's class object and a tag.
+     *
+     * @param frClass Your fragment's class object.
+     * @param tag The tag that will be returned from {@link FragmentProvider#getTag()}.
+     */
     public FragmentProviderImpl(Class<? extends Fragment> frClass, String tag) {
         this.frClass = frClass;
         this.tag = tag;
