@@ -63,3 +63,9 @@ frController.pushBody()
                 .fragment(secondFragmentProvider)
                 .push();
 ```
+
+If you are inside one of the controller's children and you want to obtain the controller's instance, you can do so by using
+this handy method:
+```java
+FragmentController frController = FragmentUtil.getFragmentController(this);
+```
