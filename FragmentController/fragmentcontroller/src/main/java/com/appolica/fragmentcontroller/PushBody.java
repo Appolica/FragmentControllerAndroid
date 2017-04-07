@@ -16,13 +16,19 @@ package com.appolica.fragmentcontroller;
 
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 
 import com.appolica.fragmentcontroller.fragment.FragmentProvider;
 
 import org.jetbrains.annotations.Contract;
 
 /**
+ * This class is a wrapper of a single {@link android.support.v4.app.FragmentTransaction}. It holds
+ * all the information, needed for your fragment to be shown. You construct this object by using
+ * {@link PushBody.Builder}. A new instance of the builder can be obtained by calling
+ * {@link FragmentController#pushBody()}.
  *
+ * @see PushBody.Builder
  */
 public class PushBody {
     private String tag;
@@ -83,7 +89,8 @@ public class PushBody {
     }
 
     /**
-     *
+     *  Set all properties for the {@link android.support.v4.app.FragmentTransaction} by using this
+     *  builder.
      */
     public static class Builder {
         private String tag;
@@ -96,28 +103,21 @@ public class PushBody {
         private PushBodyConsumer bodyConsumer;
         private TransitionAnimationBody transitionAnimation = null;
 
-        /**
-         *
-         * @param bodyConsumer
-         * @return
-         */
         @Contract("_ -> !null")
-        public static Builder instance(@NonNull PushBodyConsumer bodyConsumer) {
+        static Builder instance(@NonNull PushBodyConsumer bodyConsumer) {
             return new Builder(bodyConsumer);
         }
 
-        /**
-         *
-         * @param bodyConsumer
-         */
-        public Builder(PushBodyConsumer bodyConsumer) {
+        private Builder(PushBodyConsumer bodyConsumer) {
             this.bodyConsumer = bodyConsumer;
         }
 
         /**
+         * Pass true if you want the transaction for showing your fragment to be added to
+         * {@link android.support.v4.app.FragmentManager}'s back stack, false otherwise.
          *
-         * @param toBackStack
-         * @return
+         * @param toBackStack Pass true if you want the transaction to be added to the back stack.
+         * @return The same object of the builder.
          */
         public Builder addToBackStack(boolean toBackStack) {
             this.addToBackStack = toBackStack;
@@ -125,9 +125,15 @@ public class PushBody {
         }
 
         /**
+         * Tell which fragment you want to show, by passing a corresponding
+         * {@link FragmentProvider} implementation. The tag for this fragment will be obtained
+         * from the {@link FragmentProvider}.
          *
-         * @param fragmentType
-         * @return
+         * @param fragmentType An implementation of {@link FragmentProvider} corresponding
+         *                     to your fragment.
+         * @return The same object of the builder.
+         *
+         * @see FragmentProvider
          */
         public Builder fragment(FragmentProvider fragmentType) {
             fragment(fragmentType, fragmentType.getTag());
@@ -135,10 +141,14 @@ public class PushBody {
         }
 
         /**
+         * Same as {@link PushBody.Builder#fragment(FragmentProvider)}, but you have pass the
+         * fragment's tag explicitly.
          *
-         * @param fragmentType
-         * @param tag
-         * @return
+         * @param fragmentType An implementation of {@link FragmentProvider} corresponding
+         *                     to your fragment.
+         * @param tag The tag, used for your fragment when executing the transaction.
+         *
+         * @return The same object of the builder.
          */
         public Builder fragment(FragmentProvider fragmentType, String tag) {
             this.fragmentType = fragmentType;
@@ -147,9 +157,14 @@ public class PushBody {
         }
 
         /**
+         * Pass true to this method if you like to show your fragment using default animations.
+         * There is no animation by default.
+
+         * @param withAnimation true to show your fragment with default animations, false otherwise.
          *
-         * @param withAnimation
-         * @return
+         * @return The same object of the builder.
+         *
+         * @see TransitionAnimationBody
          */
         public Builder withAnimation(boolean withAnimation) {
             if (withAnimation) {
@@ -162,17 +177,26 @@ public class PushBody {
         }
 
         /**
+         * If you want to set a custom animation for showing your fragment, this is what you have
+         * to use.This method will return a {@link TransitionAnimationBody} object, to which
+         * you have to set your animations.
          *
-         * @return
+         * @return {@link TransitionAnimationBody} object for setting animations.
+         *
+         * @see TransitionAnimationBody
          */
         public TransitionAnimationBody customAnimation() {
             return new TransitionAnimationBody();
         }
 
         /**
+         * Pass true if you want the operation for adding your fragment to be committed immediately.
+         * If you pass true to this method, there will be no need of calling
+         * {@link FragmentManager#executePendingTransactions()} afterwards.
          *
-         * @param immediate
-         * @return
+         * @param immediate true to commit the operation immediately, false otherwise. false is
+         *                  by default.
+         * @return The same object of the builder.
          */
         public Builder immediate(boolean immediate) {
             this.immediate = immediate;
@@ -180,8 +204,10 @@ public class PushBody {
         }
 
         /**
+         * Create the {@link PushBody} object for your fragment. This object can be passed then to
+         * {@link FragmentController#push(PushBody)}.
          *
-         * @return
+         * @return The created {@link PushBody} object for showing your fragment.
          */
         public PushBody build() {
             if (fragmentType == null) {
@@ -202,7 +228,8 @@ public class PushBody {
         }
 
         /**
-         *
+         * Directly push the fragment which's {@link PushBody} your were building for.
+         * This method calls {@link Builder#build()} internally.
          */
         public void push() {
             final PushBody pushBody = build();
@@ -214,7 +241,14 @@ public class PushBody {
         }
 
         /**
+         * This class holds the four animation ids for animating the fragments when executing the
+         * transaction for showing you fragment. The default animations in this class are:<br>
+         *     enter - R.anim.slide_in_right
+         *     exit - R.anim.slide_out_left
+         *     popEnter - android.R.anim.slide_in_left
+         *     popExit - android.R.anim.slide_out_right
          *
+         * @see android.support.v4.app.FragmentTransaction#setCustomAnimations(int, int, int, int)
          */
         public class TransitionAnimationBody {
             private int enter = R.anim.slide_in_right;
@@ -223,9 +257,9 @@ public class PushBody {
             private int popExit = android.R.anim.slide_out_right;
 
             /**
-             *
-             * @param enter
-             * @return
+             * Set the resource id for your enter animation.
+             * @param enter resource id of enter animation.
+             * @return The same {@link TransitionAnimationBody} object.
              */
             public TransitionAnimationBody enter(int enter) {
                 this.enter = enter;
@@ -233,9 +267,9 @@ public class PushBody {
             }
 
             /**
-             *
-             * @param exit
-             * @return
+             * Set the resource id for your exit animation.
+             * @param exit resource id of exit animation.
+             * @return The same {@link TransitionAnimationBody} object.
              */
             public TransitionAnimationBody exit(int exit) {
                 this.exit = exit;
@@ -243,9 +277,9 @@ public class PushBody {
             }
 
             /**
-             *
-             * @param popEnter
-             * @return
+             * Set the resource id for your popEnter animation.
+             * @param popEnter resource id of popEnter animation.
+             * @return The same {@link TransitionAnimationBody} object.
              */
             public TransitionAnimationBody popEnter(int popEnter) {
                 this.popEnter = popEnter;
@@ -253,9 +287,9 @@ public class PushBody {
             }
 
             /**
-             *
-             * @param popExit
-             * @return
+             * Set the resource id for your popExit animation.
+             * @param popExit resource id of enter animation.
+             * @return The same {@link TransitionAnimationBody} object.
              */
             public TransitionAnimationBody popExit(int popExit) {
                 this.popEnter = popExit;
@@ -263,8 +297,10 @@ public class PushBody {
             }
 
             /**
+             * Return back to building your {@link PushBody}
              *
-             * @return
+             * @return The {@link PushBody.Builder} object you were using before calling
+             * {@link Builder#customAnimation()}.
              */
             public PushBody.Builder end() {
                 PushBody.Builder.this.setTransitionAnimation(this);
