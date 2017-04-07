@@ -15,13 +15,18 @@
 package com.appolica.fragmentcontroller;
 
 /**
+ * Implement this interface in the child fragments of {@link FragmentController} so they can
+ * receive the onBackPressed event. In order to this to work, you have to call
+ * {@link FragmentController#onBackPressed()} from the parent {@link android.app.Activity} or
+ * whatever holds your controller and receives the onBackPressed event.
  *
  */
 public interface OnBackPressedListener {
 
     /**
-     *
-     * @return
+     * Called when an onBackPressed event was received.
+     * @return true if the event was handled, false if not and you want to pass it
+     * up in the chain.
      */
     boolean onBackPressed();
 

@@ -23,9 +23,12 @@ import java.util.List;
 public class FragmentUtil {
 
     /**
+     * Get all fragments, returned from {@link FragmentManager#getFragments()} but without the
+     * null references in the list.
      *
-     * @param fragmentManager
-     * @return
+     * @param fragmentManager The {@link FragmentManager} which's fragments you want to get.
+     *
+     * @return A list of the {@link FragmentManager}'s fragments, without the null references.
      */
     public static List<Fragment> getFragments(FragmentManager fragmentManager) {
         final List<Fragment> fragments = new ArrayList<>();

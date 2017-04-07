@@ -20,7 +20,10 @@ import android.view.animation.Animation;
 import com.appolica.fragmentcontroller.fragment.animation.TransitionAnimationManager;
 
 /**
- *
+ * This fragment implements {@link TransitionAnimationManager} and disables the transaction
+ * animation by returning an Animation object with 0 duration in
+ * {@link Fragment#onCreateAnimation(int, boolean, int)}. This dummy animation will be returned only
+ * if {@link TransitionAnimationManager} gets called.
  */
 public class DisabledAnimationFragment extends Fragment implements TransitionAnimationManager {
 

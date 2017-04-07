@@ -15,12 +15,18 @@
 package com.appolica.fragmentcontroller.fragment.animation;
 
 /**
- *
+ * If a {@link android.support.v4.app.Fragment} was pushed with animation but you would like to
+ * pop it without one, the {@link com.appolica.fragmentcontroller.FragmentController} requires your
+ * {@link android.support.v4.app.Fragment} to implement this interface.
  */
 public interface TransitionAnimationManager {
 
     /**
+     * Called by {@link com.appolica.fragmentcontroller.FragmentController} when you want to pop
+     * your fragment without animation but it was previously pushed with such one. Implementation
+     * of this method should disable it.
      *
+     * @see com.appolica.fragmentcontroller.fragment.DisabledAnimationFragment
      */
     void disableNextAnimation();
 }

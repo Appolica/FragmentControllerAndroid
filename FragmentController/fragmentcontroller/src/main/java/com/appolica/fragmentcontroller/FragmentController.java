@@ -328,6 +328,17 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
         }
     }
 
+    /**
+     * Call this method from whatever holds this controller and receives an event when the back
+     * button is pressed. This will propagate the event to the currently shown fragment if it
+     * implements {@link OnBackPressedListener}. If the child fragment doesn't handle the event,
+     * this controller will call {@link #pop(boolean)} with passing true.
+     * <h3>Note:</h3> {@link FragmentController} also implements {@link OnBackPressedListener} so
+     *     the onBackPressed mechanism will work for a controller nested in a controller.
+     *
+     * @return true if the event was handled by the visible child of the controller or if something
+     * was popped. false is returned otherwise.
+     */
     @Override
     public boolean onBackPressed() {
         final Fragment topFragment = getTopFragment();
