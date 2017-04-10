@@ -25,7 +25,7 @@ public class FragmentProviderImpl implements FragmentProvider {
     private String tag;
 
     /**
-     * Create a {@link FragmentProvider} for your fragment, by giving only it's class object.
+     * Create a {@link FragmentProvider} for your fragment, by giving only its class object.
      * The class name will be used as a tag.
      *
      * @param frClass Your fragment's class object.
@@ -35,7 +35,7 @@ public class FragmentProviderImpl implements FragmentProvider {
     }
 
     /**
-     * Create a {@link FragmentProvider} for your fragment, by giving it's class object and a tag.
+     * Create a {@link FragmentProvider} for your fragment, by giving its class object and a tag.
      *
      * @param frClass Your fragment's class object.
      * @param tag The tag that will be returned from {@link FragmentProvider#getTag()}.
