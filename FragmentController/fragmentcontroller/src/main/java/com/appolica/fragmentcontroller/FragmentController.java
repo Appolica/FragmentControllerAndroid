@@ -135,6 +135,12 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
         return PushBody.Builder.instance(this);
     }
 
+    /**
+     * If you have built a {@link PushBody} object but haven't pushed it yet, this is how you can
+     * do that. This method will commit the transaction wrapped in the body.
+     *
+     * @param body The transaction, wrapped inside a {@link PushBody}.
+     */
     @Override
     public void push(PushBody body) {
         final FragmentManager fragmentManager = getChildFragmentManager();
