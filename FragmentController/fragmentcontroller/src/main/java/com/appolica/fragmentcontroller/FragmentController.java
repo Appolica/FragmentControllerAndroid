@@ -170,7 +170,7 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
 
     /**
      * Same as {@link FragmentController#popAsync(boolean)} but performs the operation
-     * immediately so there is no need of calling
+     * immediately, so there is no need of calling
      * {@link FragmentManager#executePendingTransactions()} afterwards.
      *
      * @param withAnimation Pass true if you want the changes to be animated, false otherwise.
