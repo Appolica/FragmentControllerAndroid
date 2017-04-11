@@ -74,3 +74,5 @@ Popping a fragment is also as easy as possible:
 ```java
 FragmentUtil.getFragmentController(this).pop(true);
 ```
+
+Go to [Wiki](https://github.com/Appolica/FragmentControllerAndroid/wiki) for more information.
