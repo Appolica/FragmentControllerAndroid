@@ -70,7 +70,7 @@ this handy method:
 final FragmentController frController = FragmentUtil.getFragmentController(this);
 ```
 
-Popping a fragment is as easy as possible:
+Popping a fragment is also as easy as possible:
 ```java
 FragmentUtil.getFragmentController(this).pop(true);
 ```
