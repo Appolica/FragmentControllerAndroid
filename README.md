@@ -1,3 +1,5 @@
+[ ![Download](https://api.bintray.com/packages/appolica-ltd/appolica/FragmentController/images/download.svg?version=1.0.0) ](https://bintray.com/appolica-ltd/appolica/FragmentController/1.0.0/link)
+
 # FragmentControllerAndroid
 
 This library wrapps around the Android's FragmentManager and provides an easy to use API. You can add fragments without bothering about the FragmentTransaction. Check the API to see what it provides.
@@ -5,8 +7,17 @@ This library wrapps around the Android's FragmentManager and provides an easy to
 FragmentControllerAndroid is developed and maintained by [Appolica](http://www.appolica.com/).
 
 ## Download
-
-## Gradle
+### Gradle
+`compile 'com.appolica:fragment-controller:1.0.0'`
+### Maven
+```
+<dependency>
+  <groupId>com.appolica</groupId>
+  <artifactId>fragment-controller</artifactId>
+  <version>1.0.0</version>
+  <type>pom</type>
+</dependency>
+```
 
 ## Example
 
