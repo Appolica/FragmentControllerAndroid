@@ -247,7 +247,6 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
     @Nullable
     private Fragment getTopFragment() {
         final List<Fragment> fragments = FragmentUtil.getFragments(getChildFragmentManager());
-
         final int size = fragments.size();
         if (size > 0) {
             return fragments.get(size - 1);

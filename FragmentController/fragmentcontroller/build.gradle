@@ -1,14 +1,26 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release' // must be applied after your artifact generating plugin (eg. java / com.android.library)
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.novoda:bintray-release:0.4.0'
+    }
+
+}
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion "25.0.3"
 
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 25
         versionCode 1
-        versionName "1.0"
+        versionName LIB_VERSION
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -18,6 +30,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    lintOptions {
+        disable 'RestrictedApi'
     }
 }
 
@@ -29,4 +45,15 @@ dependencies {
     compile 'com.android.support:support-fragment:25.3.1'
     testCompile 'junit:junit:4.12'
     compile 'org.jetbrains:annotations-java5:15.0'
+}
+
+publish {
+    userOrg = 'appolica-ltd'
+    groupId = 'com.appolica'
+    artifactId = 'fragment-controller'
+    publishVersion = LIB_VERSION
+    website = 'https://github.com/Appolica/FragmentControllerAndroid/'
+    licences = ['Apache-2.0']
+    repoName = 'appolica'
+    uploadName = 'FragmentController'
 }
