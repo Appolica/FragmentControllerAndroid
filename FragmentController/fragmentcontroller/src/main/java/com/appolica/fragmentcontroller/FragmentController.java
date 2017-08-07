@@ -22,14 +22,20 @@ import java.util.List;
 public class FragmentController extends Fragment implements PushBody.PushBodyConsumer, OnBackPressedListener {
     public static final String ARG_ROOT_FRAGMENT = FragmentController.class.getName() + ":ArgRootFragment";
     public static final String ARG_ROOT_TAG = FragmentController.class.getName() + ":ArgRootTAG";
+    public static final String ARG_ROOT_BUNDLE = FragmentController.class.getName() + ":ArgRootBundle";
 
     public static FragmentController instance(ControllerFragmentType fragmentType) {
+        return instance(fragmentType, fragmentType.getInstance().getArguments());
+    }
+
+    public static FragmentController instance(ControllerFragmentType fragmentType, Bundle rootArgs) {
         final FragmentController controller = new FragmentController();
 
         final Bundle args = new Bundle();
 
         args.putSerializable(ARG_ROOT_FRAGMENT, fragmentType.getInstance().getClass());
         args.putString(ARG_ROOT_TAG, fragmentType.getTag());
+        args.putBundle(ARG_ROOT_BUNDLE, rootArgs);
 
         controller.setArguments(args);
 
@@ -65,13 +71,14 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
 
             final Serializable serializedClass = arguments.getSerializable(ARG_ROOT_FRAGMENT);
             final String tag = arguments.getString(ARG_ROOT_TAG);
+            final Bundle rootArgs = arguments.getBundle(ARG_ROOT_BUNDLE);
 
             if (!(serializedClass instanceof Class)) {
                 throw new IllegalStateException("You must provide provide root fragment of type Class<? extends Fragment>.");
             }
 
             final Class<? extends Fragment> rootClass = (Class<? extends Fragment>) serializedClass;
-            fragmentType = new FragmentTypeImpl(rootClass, tag);
+            fragmentType = new FragmentTypeImpl(rootClass, tag, rootArgs);
         }
 
         return fragmentType;
@@ -247,7 +254,6 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
     @Nullable
     private Fragment getTopFragment() {
         final List<Fragment> fragments = FragmentUtil.getFragments(getChildFragmentManager());
-
         final int size = fragments.size();
         if (size > 0) {
             return fragments.get(size - 1);
