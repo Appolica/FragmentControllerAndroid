@@ -1,4 +1,4 @@
-[ ![Download](https://api.bintray.com/packages/appolica-ltd/appolica/FragmentController/images/download.svg?version=1.0.0) ](https://bintray.com/appolica-ltd/appolica/FragmentController/1.0.0/link)
+[ ![Download](https://api.bintray.com/packages/appolica-ltd/appolica/FragmentController/images/download.svg) ](https://bintray.com/appolica-ltd/appolica/FragmentController/_latestVersion)
 
 # FragmentControllerAndroid
 
