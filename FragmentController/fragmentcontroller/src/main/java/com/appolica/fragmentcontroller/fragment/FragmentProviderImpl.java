@@ -14,6 +14,7 @@
 
 package com.appolica.fragmentcontroller.fragment;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 /**
@@ -23,6 +24,7 @@ public class FragmentProviderImpl implements FragmentProvider {
 
     private final Class<? extends Fragment> frClass;
     private String tag;
+    private Bundle args;
 
     /**
      * Create a {@link FragmentProvider} for your fragment, by giving only its class object.
@@ -41,17 +43,29 @@ public class FragmentProviderImpl implements FragmentProvider {
      * @param tag The tag that will be returned from {@link FragmentProvider#getTag()}.
      */
     public FragmentProviderImpl(Class<? extends Fragment> frClass, String tag) {
+        this(frClass, tag, null);
+    }
+
+    /**
+     * Create a {@link FragmentProvider} for your fragment, by giving its class object and a tag and
+     * arguments for the fragment.
+     *
+     * @param frClass Your fragment's class object.
+     * @param tag The tag that will be returned from {@link FragmentProvider#getTag()}.
+     */
+    public FragmentProviderImpl(Class<? extends Fragment> frClass, String tag, Bundle args) {
         this.frClass = frClass;
         this.tag = tag;
+        this.args = args;
     }
 
     @Override
     public Fragment getInstance() {
         try {
-            return frClass.newInstance();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+            Fragment fragment = frClass.newInstance();
+            fragment.setArguments(args);
+            return fragment;
+        } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
 

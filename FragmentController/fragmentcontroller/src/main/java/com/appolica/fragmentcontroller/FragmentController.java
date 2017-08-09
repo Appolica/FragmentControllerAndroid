@@ -37,7 +37,8 @@ import java.util.List;
  */
 public class FragmentController extends Fragment implements PushBody.PushBodyConsumer, OnBackPressedListener {
     public static final String ARG_ROOT_FRAGMENT = FragmentController.class.getName() + ":ArgRootFragment";
-    public static final String ARG_ROOT_TAG = FragmentController.class.getName() + ":ArgRootTag";
+    public static final String ARG_ROOT_TAG = FragmentController.class.getName() + ":ArgRootTAG";
+    public static final String ARG_ROOT_BUNDLE = FragmentController.class.getName() + ":ArgRootBundle";
 
     /**
      * Instantiate the {@link FragmentController} by giving it a {@link FragmentProvider} that
@@ -48,12 +49,17 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
      * @return A new instance of {@link FragmentController}.
      */
     public static FragmentController instance(FragmentProvider provider) {
+        return instance(provider, provider.getInstance().getArguments());
+    }
+
+    public static FragmentController instance(FragmentProvider fragmentType, Bundle rootArgs) {
         final FragmentController controller = new FragmentController();
 
         final Bundle args = new Bundle();
 
-        args.putSerializable(ARG_ROOT_FRAGMENT, provider.getInstance().getClass());
-        args.putString(ARG_ROOT_TAG, provider.getTag());
+        args.putSerializable(ARG_ROOT_FRAGMENT, fragmentType.getInstance().getClass());
+        args.putString(ARG_ROOT_TAG, fragmentType.getTag());
+        args.putBundle(ARG_ROOT_BUNDLE, rootArgs);
 
         controller.setArguments(args);
 
@@ -109,13 +115,14 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
 
             final Serializable serializedClass = arguments.getSerializable(ARG_ROOT_FRAGMENT);
             final String tag = arguments.getString(ARG_ROOT_TAG);
+            final Bundle rootArgs = arguments.getBundle(ARG_ROOT_BUNDLE);
 
             if (!(serializedClass instanceof Class)) {
                 throw new IllegalStateException("You must provide provide root fragment of type Class<? extends Fragment>.");
             }
 
             final Class<? extends Fragment> rootClass = (Class<? extends Fragment>) serializedClass;
-            fragmentType = new FragmentProviderImpl(rootClass, tag);
+            fragmentType = new FragmentProviderImpl(rootClass, tag, rootArgs);
         }
 
         return fragmentType;
@@ -366,7 +373,6 @@ public class FragmentController extends Fragment implements PushBody.PushBodyCon
     @Nullable
     private Fragment getTopFragment() {
         final List<Fragment> fragments = FragmentUtil.getFragments(getChildFragmentManager());
-
         final int size = fragments.size();
         if (size > 0) {
             return fragments.get(size - 1);
