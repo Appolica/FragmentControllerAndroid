@@ -8,13 +8,13 @@ FragmentControllerAndroid is developed and maintained by [Appolica](http://www.a
 
 ## Download
 ### Gradle
-`compile 'com.appolica:fragment-controller:1.0.0'`
+`compile 'com.appolica:fragment-controller:1.0.2'`
 ### Maven
 ```
 <dependency>
   <groupId>com.appolica</groupId>
   <artifactId>fragment-controller</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.2</version>
   <type>pom</type>
 </dependency>
 ```
