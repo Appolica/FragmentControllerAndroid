@@ -1,3 +1,7 @@
+**This library is deprecated and will no longer be maintained. Please use https://developer.android.com/guide/navigation/navigation-getting-started **
+
+
+
 [ ![Download](https://api.bintray.com/packages/appolica-ltd/appolica/FragmentController/images/download.svg) ](https://bintray.com/appolica-ltd/appolica/FragmentController/_latestVersion)
 
 # FragmentControllerAndroid
