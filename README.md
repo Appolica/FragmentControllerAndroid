@@ -1,4 +1,4 @@
-**This library is deprecated and will no longer be maintained. Please use https://developer.android.com/guide/navigation/navigation-getting-started **
+This library is deprecated and will no longer be maintained. Please use https://developer.android.com/guide/navigation/navigation-getting-started
 
 
 
